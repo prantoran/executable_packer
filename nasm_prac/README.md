@@ -74,3 +74,23 @@ xxd -s 40 -l 8 -g 8 -e ./hello
 echo $((0x2108))
 # 8456
 ```
+- Start of section headers table: `0x2108`
+
+sh_offset = 0x18 # Offset of the section in the file image. 
+
+e_shentsize = Every section header has length 0x40
+
+```bash
+xxd -s $((0x2108 + 0x40*5 + 0x18)) -l 8 -g 8 -e ./hello
+# 00002260: 00000000000020df                    . ......
+```
+- The data of the section that contains section names should be at `0x20df`
+
+
+```bash
+xxd -s $((0x20df)) ./hello | head -4
+# 000020df: 002e 7379 6d74 6162 002e 7374 7274 6162  ..symtab..strtab
+# 000020ef: 002e 7368 7374 7274 6162 002e 7465 7874  ..shstrtab..text
+# 000020ff: 002e 6461 7461 0000 0000 0000 0000 0000  ..data..........
+# 0000210f: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+```
